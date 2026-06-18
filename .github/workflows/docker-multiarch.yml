@@ -1,9 +1,7 @@
 # TIS Console - Multi-arch Docker Image Build (x86 + ARM)
 #
 # Downloads pre-built tis-uber.tar.gz and builds Docker image.
-# Pushes to:
-#   - GitHub Container Registry (ghcr.io)
-#   - Private Harbor Registry (harbor.hrids.com) — when secrets configured
+# Pushes to Private Harbor Registry (harbor.hrids.com) when secrets configured
 #
 # Required Secrets (optional, for Harbor push):
 #   HARBOR_USERNAME - Harbor 登录用户名
@@ -25,9 +23,7 @@ on:
       - main
 
 env:
-  REGISTRY_GHCR: ghcr.io
   REGISTRY_HARBOR: harbor.hrids.com
-  IMAGE_NAME_GHCR: ${{ github.repository_owner }}/tis-console
   IMAGE_NAME_HARBOR: tis/tis-console
 
 jobs:
@@ -35,7 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
 
     steps:
       - name: Checkout repository
@@ -63,13 +58,6 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       # ==================== Registry Login ====================
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY_GHCR }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Check Harbor registry secrets
         id: check-harbor
         env:
@@ -95,7 +83,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.REGISTRY_GHCR }}/${{ env.IMAGE_NAME_GHCR }}
             ${{ steps.check-harbor.outputs.available == 'true' && format('{0}/{1}', env.REGISTRY_HARBOR, env.IMAGE_NAME_HARBOR) || '' }}
           tags: |
             type=raw,value=${{ steps.meta-tag.outputs.tag }}
@@ -124,5 +111,4 @@ jobs:
           echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| **Tag** | \`${{ steps.meta-tag.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Platforms** | \`linux/amd64\`, \`linux/arm64\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **GHCR** | \`${{ env.REGISTRY_GHCR }}/${{ env.IMAGE_NAME_GHCR }}:${{ steps.meta-tag.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Harbor** | \`${{ env.REGISTRY_HARBOR }}/${{ env.IMAGE_NAME_HARBOR }}:${{ steps.meta-tag.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY

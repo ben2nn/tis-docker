@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     rm -f /tmp/tis-uber.tar.gz && \
     apt-get purge -y curl && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /opt/app/tis-uber/web-start
+WORKDIR /opt/app/tis-uber
 
 RUN mkdir -p /opt/data && \
     addgroup --system tis && \
@@ -39,4 +39,4 @@ EXPOSE 8080 56432
 
 VOLUME ["/opt/data"]
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_JVM_OPTS -cp 'lib/*:conf:.' com.qlangtech.tis.web.start.TisApp"]
+ENTRYPOINT ["/opt/app/tis-uber/bin/tis"]

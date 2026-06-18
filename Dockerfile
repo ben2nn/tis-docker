@@ -17,6 +17,9 @@ WORKDIR /opt/app
 # Copy local tis-uber directory directly
 COPY tis-uber /opt/app/tis-uber
 
+# Fix execute permissions (Windows host doesn't preserve them)
+RUN chmod +x /opt/app/tis-uber/bin/tis /opt/app/tis-uber/bin/zookeeper
+
 WORKDIR /opt/app/tis-uber
 
 RUN mkdir -p /opt/data && \

@@ -39,4 +39,19 @@ EXPOSE 8080 56432
 
 VOLUME ["/opt/data"]
 
-ENTRYPOINT ["/opt/app/tis-uber/bin/tis"]
+# Use a wrapper script to keep container running in foreground
+# The tis script starts Java in background mode, so we need to keep the container alive
+COPY <<'EOF' /opt/app/tis-uber/docker-entrypoint.sh
+#!/bin/bash
+set -e
+
+# Run the original tis script
+/opt/app/tis-uber/bin/tis
+
+# Keep container running by following the log file
+tail -f /opt/app/tis-uber/logs/assemble.log 2>/dev/null || tail -f /dev/null
+EOF
+
+RUN chmod +x /opt/app/tis-uber/docker-entrypoint.sh
+
+ENTRYPOINT ["/opt/app/tis-uber/docker-entrypoint.sh"]

@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     curl -fsSL "${TIS_RELEASE_HOST}/${TIS_VERSION}/tis/tis-uber.tar.gz" \
       -o /tmp/tis-uber.tar.gz && \
     tar -xzf /tmp/tis-uber.tar.gz -C /opt/app && \
+    sed -i 's|JAR_PID=${TIS_TIP}$JAR_NAME|JAR_PID=${TIS_TIP}/$JAR_NAME|' /opt/app/tis-uber/bin/tis && \
     rm -f /tmp/tis-uber.tar.gz && \
     apt-get purge -y curl && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
@@ -39,4 +40,4 @@ EXPOSE 8080 56432
 
 VOLUME ["/opt/data"]
 
-ENTRYPOINT ["/opt/app/tis-uber/bin/tis"]
+ENTRYPOINT ["/bin/bash", "-c", "/opt/app/tis-uber/bin/tis start; tail -F /opt/app/tis-uber/logs/tis.log 2>/dev/null || sleep infinity"]

@@ -1,0 +1,128 @@
+# TIS Console - Multi-arch Docker Image Build (x86 + ARM)
+#
+# Downloads pre-built tis-uber.tar.gz and builds Docker image.
+# Pushes to:
+#   - GitHub Container Registry (ghcr.io)
+#   - Private Harbor Registry (harbor.hrids.com) — when secrets configured
+#
+# Required Secrets (optional, for Harbor push):
+#   HARBOR_USERNAME - Harbor 登录用户名
+#   HARBOR_PASSWORD - Harbor 登录密码
+
+name: Build Multi-Arch Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '镜像 Tag（留空则使用 pom.xml 中的版本号）'
+        required: false
+        default: ''
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+
+env:
+  REGISTRY_GHCR: ghcr.io
+  REGISTRY_HARBOR: harbor.hrids.com
+  IMAGE_NAME_GHCR: ${{ github.repository_owner }}/tis-console
+  IMAGE_NAME_HARBOR: tis/tis-console
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine image tag
+        id: meta-tag
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG=$(grep -oP '(?<=<revision>)[^<]+' pom.xml)
+            if [ -z "$TAG" ]; then TAG="latest"; fi
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "📌 Image tag: $TAG"
+
+      # ==================== Docker Buildx Setup ====================
+      - name: Set up QEMU (for ARM emulation)
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ==================== Registry Login ====================
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GHCR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Harbor registry secrets
+        id: check-harbor
+        env:
+          HARBOR_USER: ${{ secrets.HARBOR_USERNAME }}
+        run: |
+          if [ -n "$HARBOR_USER" ]; then
+            echo "available=true" >> $GITHUB_OUTPUT
+          else
+            echo "available=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login to Harbor Registry
+        if: steps.check-harbor.outputs.available == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_HARBOR }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
+      # ==================== Image Metadata ====================
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REGISTRY_GHCR }}/${{ env.IMAGE_NAME_GHCR }}
+            ${{ steps.check-harbor.outputs.available == 'true' && format('{0}/{1}', env.REGISTRY_HARBOR, env.IMAGE_NAME_HARBOR) || '' }}
+          tags: |
+            type=raw,value=${{ steps.meta-tag.outputs.tag }}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # ==================== Build & Push ====================
+      - name: Build and push multi-arch image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            TIS_VERSION=${{ steps.meta-tag.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ==================== Summary ====================
+      - name: Build Summary
+        run: |
+          echo "## 🐳 Docker Multi-Arch Build Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Tag** | \`${{ steps.meta-tag.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Platforms** | \`linux/amd64\`, \`linux/arm64\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **GHCR** | \`${{ env.REGISTRY_GHCR }}/${{ env.IMAGE_NAME_GHCR }}:${{ steps.meta-tag.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Harbor** | \`${{ env.REGISTRY_HARBOR }}/${{ env.IMAGE_NAME_HARBOR }}:${{ steps.meta-tag.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY

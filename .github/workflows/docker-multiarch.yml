@@ -42,8 +42,7 @@ jobs:
           if [ -n "${{ github.event.inputs.tag }}" ]; then
             TAG="${{ github.event.inputs.tag }}"
           else
-            TAG=$(grep -oP '(?<=<revision>)[^<]+' pom.xml)
-            if [ -z "$TAG" ]; then TAG="latest"; fi
+            TAG="5.0.0"
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "📌 Image tag: $TAG"

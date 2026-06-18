@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
 WORKDIR /opt/app/tis-uber
 
 RUN mkdir -p /opt/data && \
+    ln -sf /opt/app/tis-uber/data /opt/data && \
     addgroup --system tis && \
     adduser --system --ingroup tis tis && \
     chown -R tis:tis /opt/app /opt/data
@@ -39,19 +40,4 @@ EXPOSE 8080 56432
 
 VOLUME ["/opt/data"]
 
-# Use a wrapper script to keep container running in foreground
-# The tis script starts Java in background mode, so we need to keep the container alive
-COPY <<'EOF' /opt/app/tis-uber/docker-entrypoint.sh
-#!/bin/bash
-set -e
-
-# Run the original tis script
-/opt/app/tis-uber/bin/tis
-
-# Keep container running by following the log file
-tail -f /opt/app/tis-uber/logs/assemble.log 2>/dev/null || tail -f /dev/null
-EOF
-
-RUN chmod +x /opt/app/tis-uber/docker-entrypoint.sh
-
-ENTRYPOINT ["/opt/app/tis-uber/docker-entrypoint.sh"]
+ENTRYPOINT ["/opt/app/tis-uber/bin/tis"]

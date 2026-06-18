@@ -22,10 +22,10 @@ RUN chmod +x /opt/app/tis-uber/bin/tis /opt/app/tis-uber/bin/zookeeper
 
 WORKDIR /opt/app/tis-uber
 
-RUN mkdir -p /opt/data && \
+RUN mkdir -p /opt/data /opt/logs/tis && \
     addgroup --system tis && \
     adduser --system --ingroup tis tis && \
-    chown -R tis:tis /opt/app /opt/data
+    chown -R tis:tis /opt/app /opt/data /opt/logs
 
 USER tis
 
@@ -33,4 +33,4 @@ EXPOSE 8080 56432
 
 VOLUME ["/opt/data"]
 
-ENTRYPOINT ["/bin/bash", "-c", "/opt/app/tis-uber/bin/tis start && tail -f /opt/app/tis-uber/logs/tis.log"]
+ENTRYPOINT ["/opt/app/tis-uber/bin/tis"]

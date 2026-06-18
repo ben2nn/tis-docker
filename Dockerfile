@@ -29,7 +29,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
 WORKDIR /opt/app/tis-uber
 
 RUN mkdir -p /opt/data && \
-    ln -sf /opt/app/tis-uber/data /opt/data && \
     addgroup --system tis && \
     adduser --system --ingroup tis tis && \
     chown -R tis:tis /opt/app /opt/data
@@ -40,4 +39,4 @@ EXPOSE 8080 56432
 
 VOLUME ["/opt/data"]
 
-ENTRYPOINT ["/opt/app/tis-uber/bin/tis"]
+ENTRYPOINT ["/bin/bash", "-c", "/opt/app/tis-uber/bin/tis start; while [ ! -f /opt/app/tis-uber/logs/tis.log ]; do sleep 0.5; done; tail -f /opt/app/tis-uber/logs/tis.log"]

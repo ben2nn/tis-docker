@@ -1,0 +1,38 @@
+11:41:26,824 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+11:41:26,825 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+11:41:26,826 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/tmp/tis-uber/web-start/conf/logback.xml]
+11:41:26,887 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+11:41:26,888 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+11:41:26,891 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+11:41:26,897 |-ERROR in ch.qos.logback.core.joran.spi.Interpreter@24:13 - no applicable action for [encoding], current ElementPath  is [[configuration][appender][encoding]]
+11:41:26,940 |-WARN in ch.qos.logback.core.ConsoleAppender[STDOUT] - This appender no longer admits a layout as a sub-component, set an encoder instead.
+11:41:26,940 |-WARN in ch.qos.logback.core.ConsoleAppender[STDOUT] - To ensure compatibility, wrapping your layout in LayoutWrappingEncoder.
+11:41:26,940 |-WARN in ch.qos.logback.core.ConsoleAppender[STDOUT] - See also http://logback.qos.ch/codes.html#layoutInsteadOfEncoder for details
+11:41:26,940 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+11:41:26,943 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [tis]
+11:41:26,953 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@373928166 - No compression will be used
+11:41:26,954 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@373928166 - Will use the pattern log.dir_IS_UNDEFINED/bak/%d{yyyy-MM-dd}-tis.log for the active file
+11:41:26,956 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - The date pattern is 'yyyy-MM-dd' from file name pattern 'log.dir_IS_UNDEFINED/bak/%d{yyyy-MM-dd}-tis.log'.
+11:41:26,956 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Roll-over at midnight.
+11:41:26,970 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Setting initial period to Fri Dec 26 11:41:26 CST 2025
+11:41:26,971 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+11:41:26,973 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[tis] - Active log file name: log.dir_IS_UNDEFINED/tis.log
+11:41:26,973 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[tis] - File property is set to [log.dir_IS_UNDEFINED/tis.log]
+11:41:26,974 |-INFO in ch.qos.logback.classic.joran.action.LevelAction - ROOT level set to INFO
+11:41:26,974 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[ROOT]
+11:41:26,975 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [tis] to Logger[ROOT]
+11:41:26,975 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+11:41:26,975 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@865dd6 - Registering current configuration as safe fallback point
+
+2025-12-26 11:41:27 INFO  o.s.c.s.ClassPathXmlApplicationContext- Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@1da2cb77: startup date [Fri Dec 26 11:41:27 CST 2025]; root of context hierarchy
+2025-12-26 11:41:27 INFO  o.s.b.f.xml.XmlBeanDefinitionReader- Loading XML bean definitions from class path resource [tis.application.context.xml]
+2025-12-26 11:41:27 INFO  o.s.b.f.xml.XmlBeanDefinitionReader- Loading XML bean definitions from class path resource [datasource-config-tis.xml]
+2025-12-26 11:41:27 INFO  o.s.b.f.xml.XmlBeanDefinitionReader- Loading XML bean definitions from class path resource [conf/cluster-dao-context.xml]
+2025-12-26 11:41:27 INFO  o.s.b.f.xml.XmlBeanDefinitionReader- Loading XML bean definitions from class path resource [dal/dal-dao.xml]
+2025-12-26 11:41:27 INFO  o.s.b.f.xml.XmlBeanDefinitionReader- Loading XML bean definitions from class path resource [dal/runtime-application.xml]
+2025-12-26 11:41:27 INFO  o.s.b.f.xml.XmlBeanDefinitionReader- Loading XML bean definitions from class path resource [conf/comDfireTisWorkflow-dao-context.xml]
+2025-12-26 11:41:27 INFO  o.s.b.f.xml.XmlBeanDefinitionReader- Loading XML bean definitions from class path resource [tis.application.mockable.context.xml]
+2025-12-26 11:41:27 INFO  org.eclipse.jetty.util.log- Logging initialized @754ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-12-26 11:41:27 INFO  c.q.t.m.spring.TISDataSourceFactory- have register the jndi:java:tisDataSource datasource into context
+2025-12-26 11:41:28 INFO  c.q.t.r.m.a.SysInitializeAction- dbCfg detail:{dbtype='DERBY', dbname='tis_console_db', port=0, url='null', userName='null'}
+2025-12-26 11:41:29 INFO  c.q.t.r.m.a.SysInitializeAction- init 'tis_console_db' db and initialize the tables

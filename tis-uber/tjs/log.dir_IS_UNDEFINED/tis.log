@@ -1,0 +1,12 @@
+2025-12-26 11:41:27 INFO o.s.c.s.ClassPathXmlApplicationContext:583- Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@1da2cb77: startup date [Fri Dec 26 11:41:27 CST 2025]; root of context hierarchy
+2025-12-26 11:41:27 INFO o.s.b.f.x.XmlBeanDefinitionReader:317- Loading XML bean definitions from class path resource [tis.application.context.xml]
+2025-12-26 11:41:27 INFO o.s.b.f.x.XmlBeanDefinitionReader:317- Loading XML bean definitions from class path resource [datasource-config-tis.xml]
+2025-12-26 11:41:27 INFO o.s.b.f.x.XmlBeanDefinitionReader:317- Loading XML bean definitions from class path resource [conf/cluster-dao-context.xml]
+2025-12-26 11:41:27 INFO o.s.b.f.x.XmlBeanDefinitionReader:317- Loading XML bean definitions from class path resource [dal/dal-dao.xml]
+2025-12-26 11:41:27 INFO o.s.b.f.x.XmlBeanDefinitionReader:317- Loading XML bean definitions from class path resource [dal/runtime-application.xml]
+2025-12-26 11:41:27 INFO o.s.b.f.x.XmlBeanDefinitionReader:317- Loading XML bean definitions from class path resource [conf/comDfireTisWorkflow-dao-context.xml]
+2025-12-26 11:41:27 INFO o.s.b.f.x.XmlBeanDefinitionReader:317- Loading XML bean definitions from class path resource [tis.application.mockable.context.xml]
+2025-12-26 11:41:27 INFO org.eclipse.jetty.util.log:169- Logging initialized @754ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-12-26 11:41:27 INFO c.q.t.m.s.TISDataSourceFactory:261- have register the jndi:java:tisDataSource datasource into context
+2025-12-26 11:41:28 INFO c.q.t.r.m.a.SysInitializeAction:136- dbCfg detail:{dbtype='DERBY', dbname='tis_console_db', port=0, url='null', userName='null'}
+2025-12-26 11:41:29 INFO c.q.t.r.m.a.SysInitializeAction:211- init 'tis_console_db' db and initialize the tables
